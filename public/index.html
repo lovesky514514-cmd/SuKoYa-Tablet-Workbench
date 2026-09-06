@@ -1,1 +1,122 @@
-<!doctype html><html lang="zh-CN"><head><meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1,viewport-fit=cover"><meta name="theme-color" content="#17191f"><title>SuKoYa Tablet Workbench</title><link rel="manifest" href="/manifest.json"><link rel="stylesheet" href="/style.css"></head><body><header><button id="files">☰</button><b>SuKoYa <span>Workbench</span></b><div id="path">README.md</div><button id="save">保存</button><button id="preview">预览</button><button id="run">▶ 运行</button><button id="ai">AI</button></header><main><aside id="left"><div class="bar">文件 <span><button id="newFile">＋F</button><button id="newDir">＋D</button><button id="refresh">↻</button></span></div><small id="workspace"></small><div id="tree"></div></aside><section><div id="tabs"></div><div id="editor"></div><div id="keys"><button data-ins="  ">2␠</button><button data-ins="{}">{ }</button><button data-ins="[]">[ ]</button><button data-ins="()">( )</button><button id="undo">↶</button><button id="redo">↷</button></div><div id="outbox"><div class="bar">输出 <span id="status"></span><button id="clear">清空</button></div><pre id="output">Ready.</pre></div></section><aside id="right"><div class="bar">DeepSeek <button id="settings">⚙</button></div><label class="ctx"><input id="include" type="checkbox" checked>附带当前文件</label><div id="chat"></div><div class="compose"><textarea id="prompt" placeholder="问 DeepSeek…"></textarea><button id="send">发送</button></div></aside></main><dialog id="modal"><form method="dialog"><div class="bar">DeepSeek 设置 <button>✕</button></div><label>API Key<input id="key" type="password" placeholder="sk-..."></label><div id="keyhint"></div><label>模型<select id="model"><option value="deepseek-v4-flash">deepseek-v4-flash</option><option value="deepseek-v4-pro">deepseek-v4-pro</option></select></label><label><input id="thinking" type="checkbox"> 思考模式</label><label>Base URL<input id="base" value="https://api.deepseek.com"></label><label>System Prompt<textarea id="system"></textarea></label><button id="savecfg" type="button">保存设置</button></form></dialog><script src="/vendor/monaco/loader.js"></script><script src="/app.js"></script></body></html>
+<!doctype html>
+<html lang="zh-CN">
+<head>
+  <meta charset="utf-8" />
+  <meta name="viewport" content="width=device-width,initial-scale=1,viewport-fit=cover" />
+  <meta name="theme-color" content="#dff3ff" />
+  <title>SuKoYa Tablet Workbench</title>
+  <link rel="manifest" href="/manifest.json" />
+  <link rel="stylesheet" href="/style.css" />
+</head>
+<body>
+  <div id="app">
+    <header class="topbar">
+      <button id="filesToggle" class="iconBtn" title="Files">☰</button>
+      <div class="brand">SuKoYa <span>Workbench</span></div>
+      <div id="activePath" class="activePath">README.md</div>
+      <div class="topActions">
+        <button id="langUiBtn" class="ghostBtn">中 / EN</button>
+        <button id="saveBtn" class="ghostBtn">保存</button>
+        <button id="previewBtn" class="ghostBtn hidden">预览</button>
+        <button id="runBtn" class="runBtn">▶ 运行</button>
+        <button id="aiToggle" class="iconBtn aiIcon" title="AI">DS</button>
+      </div>
+    </header>
+
+    <main class="workbench">
+      <aside id="filePanel" class="panel filesPanel">
+        <div class="panelHeader">
+          <strong data-i18n="files">文件</strong>
+          <div class="rowBtns">
+            <button id="newFileBtn" class="miniBtn" title="New file">＋F</button>
+            <button id="newFolderBtn" class="miniBtn" title="New folder">＋D</button>
+            <button id="refreshTreeBtn" class="miniBtn" title="Refresh">↻</button>
+          </div>
+        </div>
+        <div id="workspacePath" class="workspacePath"></div>
+        <div id="fileTree" class="fileTree"></div>
+      </aside>
+
+      <section class="centerPanel">
+        <div id="tabs" class="tabs"></div>
+        <div id="editor" class="editor"></div>
+
+        <div class="editorStatusBar">
+          <span id="statusMode">plaintext</span>
+          <span id="statusProblems">0 problems</span>
+          <span id="statusCursor">Ln 1, Col 1</span>
+        </div>
+
+        <div class="mobileKeys">
+          <button data-key="\t">Tab</button>
+          <button data-insert="  ">2␠</button>
+          <button data-insert="{}">{ }</button>
+          <button data-insert="[]">[ ]</button>
+          <button data-insert="()">( )</button>
+          <button data-insert="=&gt;">=&gt;</button>
+          <button id="undoBtn">↶</button>
+          <button id="redoBtn">↷</button>
+        </div>
+
+        <div class="outputPanel">
+          <div class="outputHeader">
+            <strong data-i18n="output">输出</strong>
+            <span id="runStatus"></span>
+            <button id="clearOutputBtn" class="miniBtn" data-i18n="clear">清空</button>
+          </div>
+          <pre id="output">Ready.</pre>
+        </div>
+      </section>
+
+      <aside id="aiPanel" class="panel aiPanel">
+        <div class="panelHeader">
+          <strong>DeepSeek</strong>
+          <button id="aiSettingsBtn" class="miniBtn">⚙</button>
+        </div>
+
+        <div class="assistantCard">
+          <div class="assistantAvatarWrap">
+            <img src="/assets/mascot.png" alt="assistant mascot" class="assistantAvatar" />
+          </div>
+          <div class="assistantMeta">
+            <div class="assistantName">SuKoYa DS</div>
+            <div class="assistantDesc" data-i18n="assistantDesc">代码助手 / 项目搭子</div>
+            <div class="assistantBubble" data-i18n="assistantBubble">今天也一起写代码吧。</div>
+          </div>
+        </div>
+
+        <div class="aiContext">
+          <label><input id="includeFile" type="checkbox" checked /> <span data-i18n="includeFile">附带当前文件</span></label>
+          <button id="clearChatBtn" class="miniBtn" data-i18n="newChat">新对话</button>
+        </div>
+        <div id="chat" class="chat"></div>
+        <div class="composer">
+          <textarea id="chatInput" rows="4" placeholder="问 DeepSeek…"></textarea>
+          <button id="sendBtn" class="runBtn" data-i18n="send">发送</button>
+        </div>
+      </aside>
+    </main>
+  </div>
+
+  <div id="modalBackdrop" class="modalBackdrop hidden">
+    <div class="modal">
+      <div class="modalHeader">
+        <strong data-i18n="aiSettings">DeepSeek 设置</strong>
+        <button id="closeModalBtn" class="miniBtn">✕</button>
+      </div>
+      <label>API Key<input id="apiKeyInput" type="password" placeholder="sk-..." autocomplete="off" /></label>
+      <div id="keyHint" class="hint"></div>
+      <label><span data-i18n="model">模型</span><select id="modelSelect"><option value="deepseek-v4-flash">deepseek-v4-flash</option><option value="deepseek-v4-pro">deepseek-v4-pro</option></select></label>
+      <label class="check"><input id="thinkingInput" type="checkbox" /> <span data-i18n="thinking">思考模式</span></label>
+      <label>Base URL<input id="baseUrlInput" value="https://api.deepseek.com" /></label>
+      <label>System Prompt<textarea id="systemPromptInput" rows="5"></textarea></label>
+      <div class="hint" data-i18n="keySecurity">API Key 仅保存在 Termux 本机配置文件中，网页不会回显完整密钥。</div>
+      <button id="saveConfigBtn" class="runBtn" data-i18n="saveSettings">保存设置</button>
+    </div>
+  </div>
+
+  <script>window.require = { paths: { vs: '/vendor/monaco' } };</script>
+  <script src="/vendor/monaco/loader.js"></script>
+  <script src="/app.js"></script>
+</body>
+</html>
