@@ -1,9 +1,11 @@
 {
   "name": "SuKoYa Tablet Workbench",
-  "short_name": "Workbench",
+  "short_name": "SuKoYa IDE",
   "start_url": "/",
+  "scope": "/",
   "display": "standalone",
-  "background_color": "#111318",
-  "theme_color": "#17191f",
-  "description": "Local Termux coding workbench with DeepSeek AI chat"
+  "orientation": "landscape",
+  "background_color": "#edf8ff",
+  "theme_color": "#dff3ff",
+  "description": "Bright tablet-first Termux coding workbench with DeepSeek AI chat and live diagnostics"
 }
