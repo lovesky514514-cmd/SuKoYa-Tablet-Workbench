@@ -1,0 +1,9 @@
+{
+  "name": "SuKoYa Tablet Workbench",
+  "short_name": "Workbench",
+  "start_url": "/",
+  "display": "standalone",
+  "background_color": "#111318",
+  "theme_color": "#17191f",
+  "description": "Local Termux coding workbench with DeepSeek AI chat"
+}
