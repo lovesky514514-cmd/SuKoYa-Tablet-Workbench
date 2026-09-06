@@ -1,0 +1,17 @@
+{
+  "name": "sukoya-tablet-workbench",
+  "version": "0.1.0",
+  "private": true,
+  "description": "Tablet-first local web coding workbench for Termux with DeepSeek API chat.",
+  "main": "server.js",
+  "scripts": {
+    "start": "node server.js",
+    "check": "node --check server.js"
+  },
+  "dependencies": {
+    "express": "^4.21.2",
+    "monaco-editor": "^0.52.2",
+    "tsx": "^4.20.5",
+    "typescript": "^5.9.2"
+  }
+}
